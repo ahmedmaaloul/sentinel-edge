@@ -86,33 +86,67 @@ graph TD
     - **Footprint**: Tuned for 16GB Unified Memory systems using 4-bit quantized weights.
     - **Thermal**: Driver loop includes throttling hooks to prevent thermal throttling during long-running industrial shifts.
 
-## 🛠️ Usage
+### 4. Telemetry & Dashboard
+- **MQTT Integration**: Decoupled architecture using `paho-mqtt`. Publishes alerts (`sentinel/alerts`) and live video frames (`sentinel/stream`).
+- **Web Dashboard**:
+  - **Backend**: FastAPI + WebSockets for real-time bridging.
+  - **Frontend**: React (Vite) + TailwindCSS for a responsive, modern UI.
+  - **Features**: Live video feed, real-time anomaly log, system health status.
+
+## 🛠️ Installation
 
 ### Prerequisites
 - macOS (Apple Silicon M1/M2/M3).
 - Python 3.9+.
+- MQTT Broker (e.g., `mosquitto`)
+- Node.js (for building the UI)
 
-### Installation
+### Setup
+1. **Clone the repository**:
+   ```bash
+   # (Already cloned)
+   cd SentinelEdge
+   ```
 
-```bash
-# 1. Clone the repository (if you haven't already)
-cd SentinelEdge
+2. **Create Virtual Environment**:
+   ```bash
+   python3 -m venv .venv
+   source .venv/bin/activate
+   pip install -e .
+   ```
+   *Note: This will install `mlx`, `torch`, `fastapi`, and other dependencies.*
 
-# 2. Create and Activate Virtual Environment (Recommended)
-python3 -m venv .venv
-source .venv/bin/activate
+3. **Build Frontend**:
+   ```bash
+   cd ui
+   npm install
+   npm run build
+   cd ..
+   ```
 
-# 3. Install dependencies
-pip install -e .
-```
+## 🚀 Usage
 
-### Running the System
+For the full experience, run the following in separate terminals:
 
-```bash
-# Start the surveillance loop
-# (First run will download the ~4GB quantized model to cache)
-python src/main.py --model "mlx-community/Qwen2.5-VL-7B-Instruct-4bit" --camera 0
-```
+1. **Start MQTT Broker**
+   ```bash
+   mosquitto -d
+   # OR
+   docker run -d -p 1883:1883 eclipse-mosquitto
+   ```
+
+2. **Start Dashboard (Backend + Frontend)**
+   ```bash
+   source .venv/bin/activate
+   python src/web/server.py
+   ```
+   > Access at **http://localhost:8000**
+
+3. **Start Sentinel System**
+   ```bash
+   source .venv/bin/activate
+   python src/main.py --camera 0 --model "mlx-community/Qwen2.5-VL-7B-Instruct-4bit"
+   ```
 
 ### Testing
 

@@ -24,6 +24,12 @@ dependencies = [
     "loguru",
     "torch",
     "torchvision",
+    "paho-mqtt",
+    "fastapi",
+    "fastapi",
+    "uvicorn",
+    "websockets",
+    "numpy<2",
 ]
 
 [project.optional-dependencies]
